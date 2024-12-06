@@ -65,6 +65,21 @@ Search for `<div id="product-item-{{ product.id }}"` and add to classes (keep a 
  {% if product.available == false -%}out{%- endif %}
 ```
 
+:file_folder: **sections/main-product.liquid**
+
+Search for `{%- when 'price' -%}` and add above `{%- unless default_to_first_variant -%}`:
+```
+{% comment %} [LG] Custom Badges {% endcomment %}
+{%- assign qty = product.selected_or_first_available_variant.inventory_quantity -%}
+{%- if product.tags contains "clearance" -%}
+    <span class="product-item__badge cle">Last Chance</span>
+{%- endif -%}
+{%- if qty <= 5 and product.available -%}
+    <span class="product-item__badge qty">Only {{ qty }} left!</span>
+{%- endif -%}
+{% comment %} [LG] End Custom Badges {% endcomment %}
+```
+
 :file_folder: **assets/style.css.liquid**[^3]
 
 Add anywhere in your custom CSS stylesheet:
@@ -90,6 +105,12 @@ Add anywhere in your custom CSS stylesheet:
 }
 .product-item.out > a {
   opacity: 0.5;
+}
+.product-text > .main-product-price {
+  display: flex;
+}
+.main-product-price .product-item__badge {
+  margin-right: 5px;
 }
 ```
 
