@@ -1,7 +1,7 @@
 # Shopify Product Badges
 The Shopify Combine theme[^1] has a built-in badge feature, with settings to add custom badges that will appear if a product has a specific tag. What I needed for our product badges was a bit more involved, so rather than mess with the scema, I worked with what was there and wrote my own code for the more complex scenarios.
 
-![Shopify Liquid Badge](https://img.shields.io/badge/-Shopify%20Liquid-750460)
+![HTML Badge](https://img.shields.io/badge/-HTML-323795) ![CSS Badge](https://img.shields.io/badge/-CSS-01A990) ![Shopify Liquid Badge](https://img.shields.io/badge/-Shopify%20Liquid-750460)
 
 
 ## Table of Contents 
@@ -18,30 +18,31 @@ The Shopify Combine theme[^1] has a built-in badge feature, with settings to add
 Search for `<div class="product-item__badges">` and replace[^2] all contents with it:
 ```
 {% comment %} [LG] Custom Badges {% endcomment %}
+{%- assign qty = product.selected_or_first_available_variant.inventory_quantity -%}
+
 {%- if product.tags contains "clearance" -%}
   {%- unless request.path == "/" or request.path == "/collections/last-chance" -%}
-    <span class="product-item__badge cle" style="background-color: #C6CC3D; color: #1E1E1E">Last Chance</span>
+    <span class="product-item__badge cle">Last Chance</span>
   {%- endunless -%}
 {%- endif -%}
 
 {% for variant in product.variants %}
   {% for type in variant.metafields.custom.type.value %}  
     {% if type == "Glow in the Dark" or type == "Lenticular" %}  
-      <span class="product-item__badge {{ type | slice: 0, 3 | downcase }}" style="background-color: #8ED6CF; color: #1E1E1E">{{ type }}</span>
+      <span class="product-item__badge fea">{{ type }}</span>
     {% endif %}
   {% endfor %}
 {% endfor %}
 
 {%- if product.tags contains "new" -%}
-  {%- unless request.path == "/" or request.path == "/collections/new" -%}
-  <span class="product-item__badge new" style="background-color: #DDC7E8; color: #1E1E1E">New</span>
+  {%- unless request.path == "/" or request.path == "/collections/new" or qty <= 5 -%}
+  <span class="product-item__badge new">New</span>
   {%- endunless -%}
 {%- endif -%}
 
-{%- assign qty = product.selected_or_first_available_variant.inventory_quantity -%}
 {%- if product.available == false or qty > 0 -%}
   {%- unless qty > 5 -%}
-    <span class="product-item__badge {% if product.available == false %}out{% endif %}{% if product.available %}qty{% endif %}" style="background-color: {% if product.available == false %}#FFF{% endif %}{% if product.available %}#FEFF86{% endif %}; color: #1E1E1E">
+    <span class="product-item__badge {% if product.available %}qty{% else %}out{% endif %}">
     {%- if product.available == false -%}        
       {%- if product.tags contains "clearance" -%}
         Gone for Good
@@ -50,7 +51,7 @@ Search for `<div class="product-item__badges">` and replace[^2] all contents wit
       {%- else -%}
         Temporarily Out
       {%- endif -%}
-    {%- elsif qty <= 5 and product.available == true -%}
+    {%- elsif qty <= 5 and product.available -%}
       Only {{ qty }} left!
     {%- endif -%}
     </span>
@@ -68,6 +69,25 @@ Search for `<div id="product-item-{{ product.id }}"` and add to classes (keep a 
 
 Add anywhere in your custom CSS stylesheet:
 ```
+/* ——— BADGES ——————————————— */
+.product-item__badge {
+  color: {{ black }};
+}
+.product-item__badge.cle {
+  background-color: {{ green }};
+}
+.product-item__badge.fea {
+  background-color: {{ blue }};
+}
+.product-item__badge.new {
+  background-color: {{ purple }};
+}
+.product-item__badge.qty {
+  background-color: {{ yellow }};
+}
+.product-item__badge.out {
+  background-color: {{ white }};
+}
 .product-item.out > a {
   opacity: 0.5;
 }
