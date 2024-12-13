@@ -5,7 +5,8 @@ The Shopify Combine theme[^1] has a built-in badge feature, with settings to add
 
 
 ## Table of Contents 
-* [Code](#code)    
+* [Code](#code)
+* [Customize](#customize) 
 * [Questions](#questions) 
 * [Donate](#donate)
 * [Notes](#notes)
@@ -60,26 +61,6 @@ Search for `<div class="product-item__badges">` and replace[^2] all contents wit
 {% comment %} [LG] End Custom Badges {% endcomment %}
 ```
 
-Search for `<div id="product-item-{{ product.id }}"` and add to classes (keep a space between the if statement and previous classes):
-```
- {% if product.available == false -%}out{%- endif %}
-```
-
-:file_folder: **sections/main-product.liquid**
-
-Search for `{%- when 'price' -%}` and add above `{%- unless default_to_first_variant -%}`:
-```
-{% comment %} [LG] Custom Badges {% endcomment %}
-{%- assign qty = product.selected_or_first_available_variant.inventory_quantity -%}
-{%- if product.tags contains "clearance" -%}
-    <span class="product-item__badge cle">Last Chance</span>
-{%- endif -%}
-{%- if qty <= 5 and product.available -%}
-    <span class="product-item__badge qty">Only {{ qty }} left!</span>
-{%- endif -%}
-{% comment %} [LG] End Custom Badges {% endcomment %}
-```
-
 :file_folder: **assets/style.css.liquid**[^3]
 
 Add anywhere in your custom CSS stylesheet:
@@ -113,6 +94,27 @@ Add anywhere in your custom CSS stylesheet:
   margin-right: 5px;
 }
 ```
+
+
+## Customize
+
+:page_facing_up: **Sections ▸ Products ▸ Default product**
+
+Under `Product page`, add a `Custom HTML / Liquid` block and add:
+```
+{% comment %} [LG] Custom Badges {% endcomment %}
+{%- assign qty = product.selected_or_first_available_variant.inventory_quantity -%}
+<div class="product-badges-container">
+{%- if product.tags contains "clearance" -%}
+<span class="product-item__badge cle">Last Chance</span>
+{%- endif -%}
+{%- if qty <= 5 and product.available -%}
+<span class="product-item__badge qty">Only {{ qty }} left!</span>
+{%- endif -%}
+</div>
+{% comment %} [LG] End Custom Badges {% endcomment %}
+```
+
 
 ## Questions
 If you have any questions, feel free to find me at:
