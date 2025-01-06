@@ -14,7 +14,7 @@ The Shopify Combine theme[^1] has a built-in badge feature, with settings to add
 
 ## Code
 
-:file_folder: **snippets/product-item.liquid**
+:file_folder: **snippets/product-badges.liquid**
 
 Search for `<div class="product-item__badges">` and replace[^2] all contents with it:
 ```
